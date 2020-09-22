@@ -189,6 +189,7 @@ public class Server extends javax.swing.JFrame
         txtAreaMain = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("MyServer");
 
         jPanel1.setBackground(new java.awt.Color(255, 204, 153));
 
