@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class Server extends javax.swing.JFrame
 {
-
+    
     ServerSocket ss;
     HashMap clientColl = new HashMap();
 
@@ -31,21 +31,21 @@ public class Server extends javax.swing.JFrame
         try
         {
             initComponents();
-
+            
             ss = new ServerSocket(2089);
             this.lblServerStatus.setText("Server Started");
-
+            
             new ClientAccept().start();
         }
         catch (Exception ex)
         {
-
+            
         }
     }
-
+    
     class ClientAccept extends Thread
     {
-
+        
         public void run()
         {
             while (true)
@@ -74,19 +74,19 @@ public class Server extends javax.swing.JFrame
             }
         }
     }
-
+    
     class MsgRead extends Thread
     {
-
+        
         Socket s;
         String ID;
-
+        
         MsgRead(Socket s, String ID)
         {
             this.s = s;
             this.ID = ID;
         }
-
+        
         public void run()
         {
             while (!clientColl.isEmpty())
@@ -100,7 +100,7 @@ public class Server extends javax.swing.JFrame
                         txtAreaMain.append(ID + " : Removed\n");
                         new PrepareClientList().start();
                         Set<String> setStr = clientColl.keySet();
-
+                        
                         Iterator itr = setStr.iterator();
                         while (itr.hasNext())
                         {
@@ -129,7 +129,48 @@ public class Server extends javax.swing.JFrame
         }
     }
     
-    
+    class PrepareClientList extends Thread
+    {
+        
+        public void run()
+        {
+            try
+            {
+                String IDs = "";
+                Set k = clientColl.keySet();
+                Iterator itr = k.iterator();
+                while (itr.hasNext())
+                {
+                    String str = itr.next().toString();
+                    IDs += str + ",";
+                }
+                if (IDs.length() != 0)
+                {
+                    IDs = IDs.substring(0, IDs.length() - 1);
+                }
+                
+                itr = k.iterator();
+                
+                while (itr.hasNext())
+                {
+                    String key = itr.next().toString();
+                    try
+                    {
+                        new DataOutputStream(((Socket) clientColl.get(key)).getOutputStream()).writeUTF(":;.,/=" + IDs);
+                    }
+                    catch (Exception e)
+                    {
+                        clientColl.remove(key);
+                        txtAreaMain.append(key + ": removed");
+                    }
+                    
+                }
+            }
+            catch (Exception e)
+            {
+            }
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
