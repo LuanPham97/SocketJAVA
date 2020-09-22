@@ -57,7 +57,7 @@ public class Server extends javax.swing.JFrame
                     if (clientColl.containsKey(tmp))
                     {
                         DataOutputStream dout = new DataOutputStream(s.getOutputStream());
-                        dout.writeUTF("You are already registered....");
+                        dout.writeUTF("You are already registered");
                     }
                     else
                     {
@@ -65,6 +65,8 @@ public class Server extends javax.swing.JFrame
                         txtAreaMain.append(tmp + " Joined !\n");
                         DataOutputStream dout = new DataOutputStream(s.getOutputStream());
                         dout.writeUTF("");
+                        new MsgRead(s,tmp).start();
+                        new PrepareClientList().start();
                     }
                 }
                 catch (Exception ex)
@@ -168,6 +170,7 @@ public class Server extends javax.swing.JFrame
             }
             catch (Exception e)
             {
+                e.printStackTrace();
             }
         }
     }
