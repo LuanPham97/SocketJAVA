@@ -123,21 +123,41 @@ public class Server extends javax.swing.JFrame
                             }
                         }
                     }
-                    else 
+                    else
                     {
-                        str = str.substring(4);
-                        StringTokenizer st = new StringTokenizer(str, ":");
-                        String id = st.nextToken();
-                        str = st.nextToken();
-                        try
+//                        str = str.substring(4);
+//                        StringTokenizer st = new StringTokenizer(str, ":");
+//                        String id = st.nextToken();
+//                        str = st.nextToken();
+//                        try
+//                        {
+//                            new DataOutputStream(((Socket) clientColl.get(id)).getOutputStream()).writeUTF("< " + ID + " to" + id + " > " + str);
+//                        }
+//                        catch (Exception e)
+//                        {
+//                            clientColl.remove(id);
+//                            txtAreaMain.append(id + ": removed");
+//                            new PrepareClientList().start();
+//                        }
+
+                        Set k = clientColl.keySet();
+                        Iterator itr = k.iterator();
+                        while (itr.hasNext())
                         {
-                            new DataOutputStream(((Socket) clientColl.get(id)).getOutputStream()).writeUTF("< " + ID + " to" + id + " > " + str);
-                        }
-                        catch (Exception e)
-                        {
-                            clientColl.remove(id);
-                            txtAreaMain.append(id + ": removed");
-                            new PrepareClientList().start();
+                            String key = itr.next().toString();
+                            if (key.equalsIgnoreCase(ID) == false)
+                            {
+                                try
+                                {
+                                    new DataOutputStream(((Socket) clientColl.get(key)).getOutputStream()).writeUTF("< " + ID + " to ALL > " + str);
+                                }
+                                catch (Exception e)
+                                {
+                                    clientColl.remove(key);
+                                    txtAreaMain.append(key + ": removed");
+                                    new PrepareClientList().start();
+                                }
+                            }
                         }
                     }
                 }
