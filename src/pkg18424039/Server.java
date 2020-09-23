@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 /**
  *
@@ -19,7 +20,7 @@ import java.util.Set;
  */
 public class Server extends javax.swing.JFrame
 {
-    
+
     ServerSocket ss;
     HashMap clientColl = new HashMap();
 
@@ -31,21 +32,21 @@ public class Server extends javax.swing.JFrame
         try
         {
             initComponents();
-            
+
             ss = new ServerSocket(2089);
             this.lblServerStatus.setText("Server Started");
-            
+
             new ClientAccept().start();
         }
         catch (Exception ex)
         {
-            
+
         }
     }
-    
+
     class ClientAccept extends Thread
     {
-        
+
         public void run()
         {
             while (true)
@@ -65,7 +66,7 @@ public class Server extends javax.swing.JFrame
                         txtAreaMain.append(tmp + " Joined !\n");
                         DataOutputStream dout = new DataOutputStream(s.getOutputStream());
                         dout.writeUTF("");
-                        new MsgRead(s,tmp).start();
+                        new MsgRead(s, tmp).start();
                         new PrepareClientList().start();
                     }
                 }
@@ -76,19 +77,19 @@ public class Server extends javax.swing.JFrame
             }
         }
     }
-    
+
     class MsgRead extends Thread
     {
-        
+
         Socket s;
         String ID;
-        
+
         MsgRead(Socket s, String ID)
         {
             this.s = s;
             this.ID = ID;
         }
-        
+
         public void run()
         {
             while (!clientColl.isEmpty())
@@ -102,7 +103,7 @@ public class Server extends javax.swing.JFrame
                         txtAreaMain.append(ID + " : Removed\n");
                         new PrepareClientList().start();
                         Set<String> setStr = clientColl.keySet();
-                        
+
                         Iterator itr = setStr.iterator();
                         while (itr.hasNext())
                         {
@@ -122,6 +123,23 @@ public class Server extends javax.swing.JFrame
                             }
                         }
                     }
+                    else 
+                    {
+                        str = str.substring(4);
+                        StringTokenizer st = new StringTokenizer(str, ":");
+                        String id = st.nextToken();
+                        str = st.nextToken();
+                        try
+                        {
+                            new DataOutputStream(((Socket) clientColl.get(id)).getOutputStream()).writeUTF("< " + ID + " to" + id + " > " + str);
+                        }
+                        catch (Exception e)
+                        {
+                            clientColl.remove(id);
+                            txtAreaMain.append(id + ": removed");
+                            new PrepareClientList().start();
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -130,10 +148,10 @@ public class Server extends javax.swing.JFrame
             }
         }
     }
-    
+
     class PrepareClientList extends Thread
     {
-        
+
         public void run()
         {
             try
@@ -150,9 +168,9 @@ public class Server extends javax.swing.JFrame
                 {
                     IDs = IDs.substring(0, IDs.length() - 1);
                 }
-                
+
                 itr = k.iterator();
-                
+
                 while (itr.hasNext())
                 {
                     String key = itr.next().toString();
@@ -165,7 +183,7 @@ public class Server extends javax.swing.JFrame
                         clientColl.remove(key);
                         txtAreaMain.append(key + ": removed");
                     }
-                    
+
                 }
             }
             catch (Exception e)
