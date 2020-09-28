@@ -149,7 +149,8 @@ public class Server extends javax.swing.JFrame
                             {
                                 try
                                 {
-                                    new DataOutputStream(((Socket) clientColl.get(key)).getOutputStream()).writeUTF("< " + ID + " to ALL > " + str);
+                                    new DataOutputStream(((Socket) clientColl.get(key)).getOutputStream()).
+                                            writeUTF("<" + ID + " to ALL> " + str);
                                 }
                                 catch (Exception e)
                                 {
